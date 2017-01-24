@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd"> -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+    
+    default-init-method="myInitMethod">
+    
+    <!-- For BeanFacoty & Application Context -->
+    <!-- 
+    <bean id="triangle" class="com.gk.study.java.spring.model.Triangle">
+    	<constructor-arg type="java.lang.String" index="0" value="Isoceless"/>
+    	<constructor-arg type="int" index="1"  value="20"/>
+    	<property name="type" value="Equilateral"/> 
+    </bean>
+     -->
+     
+     
+     <!-- Constructor Injection, Setter Injection,Inner Bean (no id), idref, Alias  -->	
+	 <!-- 
+	 <bean id="triangle" class="com.gk.study.java.spring.model.Triangle">
+		<property name="pointA" ref="zeroPoint"/> 
+		<property name="pointA" ref="zeroPoint">
+			<idref="zeroPoint"/> 
+		</property>
+		<property name="pointB" >
+				<bean class="com.gk.study.java.spring.model.Point">
+					<property name="x" value="-20"></property>
+					<property name="y" value="0"></property>
+				</bean>
+		</property>
+		<property name="pointC" >
+				<bean class="com.gk.study.java.spring.model.Point">
+					<property name="x" value="20"></property>
+					<property name="y" value="0"></property>
+				</bean>
+		</property>
+	</bean>
+	
+	<bean id="zeroPoint" class="com.gk.study.java.spring.model.Point" >
+		<property name="x" value="0"></property>
+		<property name="y" value="0"></property>
+	</bean>
+	<alias name="triangle" alias="triangleAlias"/>
+	 -->
+
+ 
+	<!-- Initialiazing Collections  -->
+	<!-- 
+	<bean id="triangle" class="com.gk.study.java.spring.model.Triangle" >
+		<property name="points" >
+			<list>
+				<ref bean="zeroPoint"/>
+				<ref bean="point2"/>
+				<ref bean="point3"/>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="zeroPoint" class="com.gk.study.java.spring.model.Point">		
+		<property name="x" value="0"></property>
+		<property name="y" value="0"></property>
+	</bean>
+	<bean id="point2" class="com.gk.study.java.spring.model.Point">
+		<property name="x" value="-20"></property>
+		<property name="y" value="0"></property>
+	</bean>
+	<bean id="point3" class="com.gk.study.java.spring.model.Point">
+		<property name="x" value="20"></property>
+		<property name="y" value="22"></property>
+	</bean>
+	 -->
+	 
+	 <!--  Auto Wiring (byname, bytype, constructor -->
+	 <!-- 
+	 <bean id="triangle" class="com.gk.study.java.spring.model.Triangle" autowire="byName">
+	 </bean>
+	
+	<bean id="pointA" class="com.gk.study.java.spring.model.Point" >
+		<property name="x" value="0"></property>
+		<property name="y" value="0"></property>
+	</bean>
+	<bean id="pointB" class="com.gk.study.java.spring.model.Point">
+		<property name="x" value="-20"></property>
+		<property name="y" value="0"></property>
+	</bean>
+	<bean id="pointC" class="com.gk.study.java.spring.model.Point">
+		<property name="x" value="20"></property>
+		<property name="y" value="0"></property>
+	</bean>		 
+	 
+	 <bean id="cntxtAware" class="com.gk.study.java.spring.model.Point">
+		<property name="x" value="22"></property>
+		<property name="y" value="22"></property>
+	</bean>		 
+	  -->
+	 
+	 <!-- Bean Definition Inheritance, init-method, destry-method,Bean PostProcessor Implementation,
+	 FactoryBeanFactoryPostProcessor, PropertyPlaceHoldConfigurer -->	 
+	<bean id="parentTriangle" class="com.gk.study.java.spring.model.Triangle">
+		<property name="pointA" ref="pointA"/>
+	</bean>
+	 
+	<bean id="triangle" class="com.gk.study.java.spring.model.Triangle" parent="parentTriangle" init-method="myInitMethod" destroy-method="myDestroyMethod">
+	 	<property name="pointB" ref="pointB"/>
+	 	<property name="pointC" ref="pointC"/>
+	 	
+	 </bean>
+	
+	<bean id="pointA" class="com.gk.study.java.spring.model.Point" >
+		<property name="x" value="${pointA.pointX}"></property>
+		<property name="y" value="${pointA.pointY}"></property>
+	</bean>
+	<bean id="pointB" class="com.gk.study.java.spring.model.Point">
+		<property name="x" value="-20"></property>
+		<property name="y" value="0"></property>
+	</bean>
+	<bean id="pointC" class="com.gk.study.java.spring.model.Point">
+		<property name="x" value="20"></property>
+		<property name="y" value="0"></property>
+	</bean>		 
+	 
+	 <bean id="cntxtAware" class="com.gk.study.java.spring.model.Point">
+		<property name="x" value="${pointA.pointX}"></property>
+		<property name="y" value="22"></property>
+	</bean>		 
+	<!--  Bean PostProcessor Implementation --> 
+	<bean class = "com.gk.study.java.spring.postprocessors.DisplayNameBeanPostProcessor"></bean>
+	<bean class="com.gk.study.java.spring.postprocessors.MyBeanFactoryPostProcessor"></bean>  
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations" value="act-java-app.properties"/>
+	</bean> 
+	<!--  Coding to Interface -->
+	<bean id="circle" class="com.gk.study.java.spring.model.Circle" >
+		<property name="center" ref="pointA"></property>
+	</bean>
+	  
+	  
+	<!-- Annotation Process -->
+	<!-- 
+	<context:annotation-config/>
+	<context:component-scan base-package="com.gk.study.java.spring.model"/>
+	<context:component-scan base-package="com.gk.study.java.spring.eventlisteners"/>
+	-->
+	<!-- Instead of defining all BeanPostProcessors one by one you can use <context:annotation-config/> --> 
+	<!-- <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"></bean> -->
+	<!-- <bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor"></bean> -->
+	
+	<!-- <bean class = "com.gk.study.java.spring.postprocessors.DisplayNameBeanPostProcessor"></bean> -->
+	
+	
+	<!-- <beans default-init-method="myInit" default-destroy-method="cleanUp">-->
+    <!-- <bean id="triangle" class="com.gk.study.java.spring.model.Triangle" init-method="myInit" destroy-method="cleanUp">-->
+	
+	<!-- Initializing Collections  List, Set Map-->
+	<!-- 
+	<bean id="triangle" class="com.gk.study.java.spring.model.Triangle">
+		<constructor-arg value="Equilateral"></constructor-arg>
+		<property name="points" >
+			<list>
+				<ref bean="zeroPoint"/>
+				<ref bean="pointBB"/>
+				<ref bean="pointCC"/>
+			</list>
+		</property>		
+	</bean>
+	 -->
+	
+	<!-- Inner bean, Alias and refids -->
+	<!--
+		<bean id="triangle" class="com.gk.study.java.spring.model.Triangle">
+		<constructor-arg value="Equilateral"></constructor-arg>
+		<property name="pointA" ref="zeroPoint">
+			
+		</property>
+		<property name="pointB">
+			<bean class="com.gk.study.java.spring.model.Point">
+				<property name="x" value="0"></property>
+				<property name="y" value="10"></property>
+			</bean>		
+		</property>
+		<property name="pointC">
+			<bean class="com.gk.study.java.spring.model.Point">
+				<property name="x" value="20"></property>
+				<property name="y" value="0"></property>
+			</bean>		
+		</property>
+	</bean>
+	
+	<bean id="zeroPoint" class="com.gk.study.java.spring.model.Point">
+		<property name="x" value="0"></property>
+		<property name="y" value="10"></property>
+	</bean> 
+	 -->
+	 
+	
+</beans>
